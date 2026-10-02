@@ -1,0 +1,21 @@
+# `docker compose up` builds the image and runs the demo + eval once.
+services:
+  ailab:
+    build:
+      context: .
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+    image: ailab-rag:local
+    environment:
+      # Override any eval setting here or in your shell, e.g. AILAB_TOP_K=8
+      AILAB_RETRIEVER: ${AILAB_RETRIEVER:-bm25}
+      AILAB_CHUNK_SIZE: ${AILAB_CHUNK_SIZE:-32}
+      AILAB_TOP_K: ${AILAB_TOP_K:-5}
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - results:/app/results
+
+volumes:
+  results:

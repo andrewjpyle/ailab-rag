@@ -1,0 +1,21 @@
+# Regression gate for `ailab-eval`. CI fails if a metric drops below its floor MINUS the
+# tolerance band. Every key can be overridden by an environment variable (see README).
+
+[eval]
+lab = "ailab-rag"
+corpus = "fixtures/nimbus_corpus.jsonl"
+questions = "fixtures/nimbus_questions.jsonl"
+retriever = "bm25"            # bm25 | random | lead
+chunk_size = 32               # WHITESPACE tokens per chunk
+chunk_overlap = 8             # WHITESPACE tokens shared between adjacent chunks
+top_k = 5                     # chunks retrieved per question
+output = "eval_results.json"
+primary_metric = "recall"     # reported as `threshold` in eval_results.json (as recall@top_k)
+support_threshold = 0.40      # cite-or-refuse: refuse below this lexical support
+tolerance = 0.05              # gate band: fail only below floor - tolerance
+
+[thresholds]
+recall = 0.70
+hit = 0.70
+mrr = 0.50
+ndcg = 0.55
