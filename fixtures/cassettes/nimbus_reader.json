@@ -1,0 +1,14 @@
+{
+  "model": "nimbus-synthetic-reader-v1",
+  "note": "Synthetic cassette (stub-recorded). A live Ollama recording is still TODO.",
+  "entries": {
+    "fef70c3fb0c8d69ced6dfa19971a19f9875c036c0f65285cc34a6074157544b6": {
+      "model": "nimbus-synthetic-reader-v1",
+      "response": "ANSWER: The Relay batches changes and uploads them every ninety seconds by default, which keeps network use low on slow links.\nCITE: nimbus-overview#1"
+    },
+    "0a3d4c78e4a2fc8d0ab3d9059de5c69e734ec247f2c3761e79a70a9aea9a0007": {
+      "model": "nimbus-synthetic-reader-v1",
+      "response": "ANSWER: Trash keeps deleted files for thirty days before a permanent purge.\nCITE: nimbus-restore-runbook#2"
+    }
+  }
+}

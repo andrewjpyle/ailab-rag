@@ -1,0 +1,18 @@
+{"id": "q01", "question": "How often does the Nimbus Relay upload changes by default?", "doc_id": "nimbus-overview", "answer_span": "uploads them every ninety seconds by default", "answerable": true, "critical": true}
+{"id": "q02", "question": "How long does the Team plan keep version history?", "doc_id": "nimbus-pricing", "answer_span": "keeps one year of version history", "answerable": true, "trap": true}
+{"id": "q03", "question": "How many days does Trash keep a deleted file before it is purged?", "doc_id": "nimbus-restore-runbook", "answer_span": "keeps deleted files for thirty days before a permanent purge", "answerable": true, "critical": true}
+{"id": "q04", "question": "What suffix does Nimbus add to the second version of a conflicted file?", "doc_id": "nimbus-conflict-runbook", "answer_span": "the suffix conflicted copy and the device name", "answerable": true}
+{"id": "q05", "question": "Which cipher does Nimbus use for encryption at rest?", "doc_id": "nimbus-security", "answer_span": "uses the AES two fifty six cipher", "answerable": true, "critical": true}
+{"id": "q06", "question": "What status code does the Nimbus API return when a request is rate limited?", "doc_id": "nimbus-api-auth", "answer_span": "returns the status code 429", "answerable": true, "trap": true}
+{"id": "q07", "question": "What is the minimum part size for a multipart upload to the files endpoint?", "doc_id": "nimbus-api-files", "answer_span": "at least five megabytes", "answerable": true}
+{"id": "q08", "question": "How long is a Nimbus download url valid before it expires?", "doc_id": "nimbus-api-files", "answer_span": "a short lived url that expires after ten minutes", "answerable": true, "trap": true}
+{"id": "q09", "question": "On macOS, what permission does the Relay agent need to watch protected folders?", "doc_id": "nimbus-agent-install", "answer_span": "needs Full Disk Access granted in system settings", "answerable": true}
+{"id": "q10", "question": "What protects a single version from the nightly retention cleanup?", "doc_id": "nimbus-retention", "answer_span": "a pinned version is kept regardless of the plan retention window", "answerable": true, "critical": true}
+{"id": "q11", "question": "At what usage does a Nimbus storage alert fire?", "doc_id": "nimbus-storage-limits", "answer_span": "fires at ninety percent of the limit", "answerable": true}
+{"id": "q12", "question": "Who can run a region migration for a Nimbus workspace?", "doc_id": "nimbus-migration", "answer_span": "only Nimbus support can run", "answerable": true}
+{"id": "q13", "question": "How long is the Nimbus account recovery sign in link valid?", "doc_id": "nimbus-account-recovery", "answer_span": "a sign in link that is valid for fifteen minutes", "answerable": true}
+{"id": "q14", "question": "When does deleting a file actually free storage space in Nimbus?", "doc_id": "nimbus-storage-limits", "answer_span": "does not free space until the Trash is emptied and any pinned versions of the file are unpinned", "answerable": true, "critical": true}
+{"id": "u01", "question": "Which telephone hotline issues prorated refund cheques for a storage plan?", "doc_id": "", "answer_span": "", "answerable": false}
+{"id": "u02", "question": "How many decades does the discontinued Enterprise museum tier archive version history?", "doc_id": "", "answer_span": "", "answerable": false}
+{"id": "u03", "question": "Which experimental quantum cipher encrypts the biometric passport vault offline?", "doc_id": "", "answer_span": "", "answerable": false}
+{"id": "u04", "question": "What millisecond jitter randomises the webhook retry stampede during a lunar outage?", "doc_id": "", "answer_span": "", "answerable": false}
