@@ -23,6 +23,7 @@ import pytest
 from ailab_rag import metrics as ported
 from tests import _ailab_evals_metrics_ref as frozen
 
+
 def _load_live() -> ModuleType | None:
     env = os.environ.get("AILAB_EVALS_METRICS")
     if not env:
