@@ -60,8 +60,10 @@ This lab ported its retrieval math and scaffold from two repositories at `origin
 
 | Field | Value |
 |---|---|
-| sha256 | `2f75874cca890f0c38c62d9d17a7b361359b4910210914b84863b0b5109903f2` |
-| Format | JSON cassette keyed by `sha256(model, prompt)`, with `{"model", "response"}` entries |
-| Purpose | Lets `ReplayProvider` replay Reader completions with no network, exercised by `tests/test_providers.py` |
-| Origin | SYNTHETIC. These entries were recorded from the deterministic offline `StubProvider` as a stand-in, NOT from a live model. One real recording with `OllamaProvider` on a Mac with Ollama remains to be run and committed |
+| sha256 | `91cc959ba18e419dc216379a9e5c78cf57aa9689552791cd2b13f7e8ae67210c` |
+| Format | JSON cassette keyed by `sha256(model, prompt)`, with `{"model", "response", "prompt_eval_count", "eval_count"}` entries and a header (provider, model_digest, ollama_version, temperature 0, seed, recorded_on) |
+| Determinism | Recorded at temperature 0 with a fixed seed, so a re-record reproduces the same responses (Ollama 0.32.1). Token counts are the vendor's real counts, not a whitespace estimate |
+| Purpose | Lets `ReplayProvider` replay Reader completions with no network, exercised by `tests/test_providers.py` and `tests/test_live_cassette.py` |
+| Origin | REAL recording. 18 entries, one per golden question, recorded from the `gemma3:27b` model on a local Ollama server (reached over a private network) on 2026-10-02, using `make record` (`scripts/record_cassette.py`). The prompts are the exact canonical-pipeline Reader prompts (bm25, `chunk_size` 32, `chunk_overlap` 8, `top_k` 5). No synthetic stand-in |
+| Reproduce | `OLLAMA_HOST=http://<host>:11434 AILAB_RECORD_MODEL=gemma3:27b make record`. The host address is never committed |
 | License | Apache-2.0 |

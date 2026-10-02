@@ -68,14 +68,25 @@ class Reader:
         return PROMPT_TEMPLATE.format(question=question, context=context)
 
     @staticmethod
-    def parse(completion: str) -> tuple[str, list[str]]:
+    def _clean_citation(token: str) -> str:
+        """Normalise one cited id. The context shows chunks as ``[id] text``, so a real
+        model often echoes the brackets (``[nimbus-overview#2]``); strip one surrounding
+        pair so the citation resolves. This is defensive parsing, not a relabelling."""
+        token = token.strip()
+        if token.startswith("[") and token.endswith("]"):
+            token = token[1:-1].strip()
+        return token
+
+    @classmethod
+    def parse(cls, completion: str) -> tuple[str, list[str]]:
         answer = ""
         citations: list[str] = []
         for line in completion.splitlines():
             if line.startswith("ANSWER:"):
                 answer = line[len("ANSWER:") :].strip()
             elif line.startswith("CITE:"):
-                citations = [c.strip() for c in line[len("CITE:") :].split(",") if c.strip()]
+                raw = line[len("CITE:") :].split(",")
+                citations = [cls._clean_citation(c) for c in raw if cls._clean_citation(c)]
         return answer, citations
 
     def answer(self, question: str, retrieved: list[tuple[str, str]]) -> ReaderResult:

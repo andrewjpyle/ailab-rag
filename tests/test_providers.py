@@ -39,23 +39,33 @@ def test_cassette_key_is_stable() -> None:
     assert cassette_key("m", "p") != cassette_key("m", "q")
 
 
-def test_replay_provider_replays_committed_cassette() -> None:
+def test_replay_provider_replays_real_cassette_on_canonical_pipeline() -> None:
+    """The committed cassette is a REAL gemma3:27b recording. Replaying it must reproduce a
+    cited answer for an answerable question, with the SAME prompt the recorder used."""
+    from ailab_rag.chunking import chunk_corpus
+    from ailab_rag.config import load_config
+    from ailab_rag.data import load_corpus, load_questions
+    from ailab_rag.retrieval import BM25
+
     cass = json.loads(CASSETTE.read_text())
-    model = cass["model"]
-    replay = ReplayProvider(CASSETTE, name="ollama", model=model)
-    reader = Reader(replay)
-    retrieved = [
-        (
-            "nimbus-overview#1",
-            "The Relay batches changes and uploads them every ninety seconds by default, "
-            "which keeps network use low on slow links.",
-        ),
-        ("nimbus-overview#0", "Nimbus is a cloud backup and file sync service for small teams."),
-    ]
-    result = reader.answer("How often does the Relay upload changes by default?", retrieved)
+    assert cass["model"] == "gemma3:27b"  # a real local model, not the stub
+    cfg = load_config()
+    docs = load_corpus(cfg.corpus)
+    questions = load_questions(cfg.questions)
+    chunks = chunk_corpus(docs, cfg.chunk_size, cfg.chunk_overlap)
+    text_by_id = {c.id: c.text for c in chunks}
+    bm25 = BM25(chunks)
+    reader = Reader(
+        ReplayProvider(CASSETTE, name="ollama", model="gemma3:27b"),
+        support_threshold=cfg.support_threshold,
+    )
+    q = next(q for q in questions if q.id == "q01")
+    retrieved = [(cid, text_by_id[cid]) for cid in bm25(q.question, cfg.top_k)]
+    result = reader.answer(q.question, retrieved)
     assert not result.refused
-    assert result.citations == ("nimbus-overview#1",)
-    assert "ninety seconds" in result.answer
+    assert result.citations  # a resolvable citation, brackets stripped by the parser
+    assert all(c in text_by_id for c in result.citations)
+    assert "ninety seconds" in result.answer.lower()
 
 
 def test_replay_miss_raises(tmp_path: Path) -> None:

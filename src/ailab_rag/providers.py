@@ -122,29 +122,47 @@ class ReplayProvider:
 
 
 class OllamaProvider:
-    """Local models via Ollama ``/api/generate``. Used only in record mode. Stdlib HTTP."""
+    """Local models via Ollama ``/api/generate``. Used only in record mode. Stdlib HTTP.
+
+    The server address comes from ``OLLAMA_HOST`` (default ``http://localhost:11434``) and
+    is never stored. Generation is pinned to ``temperature`` 0 and a fixed ``seed`` so a
+    re-record is deterministic, which keeps the replayed numbers stable.
+    """
 
     name = "ollama"
+    DEFAULT_SEED = 7
 
-    def __init__(self, model: str, host: str | None = None, timeout: float = 300.0) -> None:
+    def __init__(
+        self, model: str, host: str | None = None, timeout: float = 300.0, seed: int = DEFAULT_SEED
+    ) -> None:
         self.model = model
         base = host or os.environ.get("OLLAMA_HOST") or "http://localhost:11434"
         if not base.startswith("http"):
             base = "http://" + base
-        self.url = base.rstrip("/") + "/api/generate"
+        self.base = base.rstrip("/")
+        self.url = self.base + "/api/generate"
         self.timeout = timeout
+        self.seed = seed
 
-    def complete(self, prompt: str) -> str:
-        payload = json.dumps({"model": self.model, "prompt": prompt, "stream": False}).encode(
-            "utf-8"
-        )
+    def generate(self, prompt: str) -> dict[str, object]:
+        """Return the raw Ollama response dict (text plus vendor token counts)."""
+        payload = json.dumps(
+            {
+                "model": self.model,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0, "seed": self.seed},
+            }
+        ).encode("utf-8")
         req = urllib.request.Request(
             self.url, data=payload, headers={"Content-Type": "application/json"}
         )
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                data = json.loads(resp.read())
+                data: dict[str, object] = json.loads(resp.read())
         except (urllib.error.URLError, TimeoutError) as exc:  # pragma: no cover - network
             raise RuntimeError(f"ollama: {exc}") from exc
-        response = data.get("response", "")
-        return str(response)
+        return data
+
+    def complete(self, prompt: str) -> str:
+        return str(self.generate(prompt).get("response", ""))

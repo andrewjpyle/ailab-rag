@@ -1,14 +1,120 @@
 {
-  "model": "nimbus-synthetic-reader-v1",
-  "note": "Synthetic cassette (stub-recorded). A live Ollama recording is still TODO.",
+  "model": "gemma3:27b",
+  "provider": "ollama",
+  "model_digest": "a418f5838eaf7fe2cfe0a3046c8384b68ba43a4435542c942f9db00a5f342203",
+  "ollama_version": "0.32.1",
+  "temperature": 0,
+  "seed": 7,
+  "recorded_on": "2026-10-02",
+  "note": "Real recording from a local Ollama server (host from OLLAMA_HOST, never stored). Keys are sha256(model, prompt) built from the canonical pipeline (bm25, the configured chunk_size/overlap and top_k). Pinned temperature 0 and a fixed seed make a re-record deterministic.",
   "entries": {
-    "fef70c3fb0c8d69ced6dfa19971a19f9875c036c0f65285cc34a6074157544b6": {
-      "model": "nimbus-synthetic-reader-v1",
-      "response": "ANSWER: The Relay batches changes and uploads them every ninety seconds by default, which keeps network use low on slow links.\nCITE: nimbus-overview#1"
+    "6c20b5939d016755ddfe40537fab31d91ef9fd164adcbd64329c758b6111eae2": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: every ninety seconds\nCITE: [nimbus-overview#2]",
+      "prompt_eval_count": 287,
+      "eval_count": 18
     },
-    "0a3d4c78e4a2fc8d0ab3d9059de5c69e734ec247f2c3761e79a70a9aea9a0007": {
-      "model": "nimbus-synthetic-reader-v1",
-      "response": "ANSWER: Trash keeps deleted files for thirty days before a permanent purge.\nCITE: nimbus-restore-runbook#2"
+    "bc96c21efea7e83af62f2d739c5084c615b06efddc272c7652c69ea4134c5b6e": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: The Team plan keeps one year of version history.\nCITE: nimbus-pricing#1",
+      "prompt_eval_count": 293,
+      "eval_count": 23
+    },
+    "7f93adb0944bcf92dd66b585ee5cd5323fd16c6a9b1a851f44303ac1569a7734": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: Trash keeps deleted files for thirty days before it is purged.\nCITE: nimbus-restore-runbook#0",
+      "prompt_eval_count": 295,
+      "eval_count": 28
+    },
+    "beed42d9bc29307810d33fd23c9f249de4f7383c3b7c41bf081ff12f1d8df5ab": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: conflicted copy\nCITE: nimbus-conflict-runbook#1",
+      "prompt_eval_count": 282,
+      "eval_count": 18
+    },
+    "9fff11d1505db1e2b6499dfc350217cd49e1ab45a4b059cfae4979064a6ccecf": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: AES two fifty six cipher.\nCITE: [nimbus-security#1]",
+      "prompt_eval_count": 286,
+      "eval_count": 21
+    },
+    "94cc5287429f25bd3b6539fc54db9eceffb0cb2bf8b6b6ce88283b10d137f95a": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: 429\nCITE: nimbus-api-auth#3",
+      "prompt_eval_count": 294,
+      "eval_count": 19
+    },
+    "f18fa0067a8ed1697b2da4434e3370377a26e466b57672d2abe5e32bb8bcba54": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: Each part except the last must be at least five megabytes.\nCITE: nimbus-api-files#2",
+      "prompt_eval_count": 294,
+      "eval_count": 28
+    },
+    "b61e8dc1849b5bb1fdf2612f495db12ff13bb75d300c3e2afb035cef2860d069": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: ten minutes\nCITE: [nimbus-api-files#3]",
+      "prompt_eval_count": 292,
+      "eval_count": 19
+    },
+    "4018edd968348cf5e991d32b6af48e84b4c0aec675635bc293381ea842bf52dd": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: On macOS the agent needs Full Disk Access granted in system settings before it can watch protected folders.\nCITE: nimbus-agent-install#1",
+      "prompt_eval_count": 293,
+      "eval_count": 34
+    },
+    "f8ad65cd1b3fa01d3abd07dd3c31ae9d90fdcf473b491c9363f87d96fcbc3b7b": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: Pinning protects a version from cleanup.\nCITE: nimbus-retention#2",
+      "prompt_eval_count": 291,
+      "eval_count": 22
+    },
+    "79fc88f3c55eaf885371cf9ddfc9a4ef94864cb1b068a86e3b7362ffdc685ae7": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: A storage alert fires when usage passes ninety percent of the for deletes and downloads.\nCITE: nimbus-notifications#1",
+      "prompt_eval_count": 291,
+      "eval_count": 29
+    },
+    "999adcbef5875a426c6b2c115f55bff4eb6dafc7f360538f2bb8d3cda7d022bd": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: Nimbus support can run a region migration for a Nimbus workspace.\nCITE: nimbus-migration#0",
+      "prompt_eval_count": 272,
+      "eval_count": 25
+    },
+    "f7e9dc1791a5982c7fb59128d4ccfafd973e95013261a5fcc2488f6cb3fb213e": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: Nimbus sends a sign in link that is valid for fifteen minutes to the address on file.\nCITE: nimbus-account-recovery#0",
+      "prompt_eval_count": 285,
+      "eval_count": 33
+    },
+    "ce1795b5482ef6bb0d1736e5858d741090e6836f4c31f65ce1311eb28e2419f9": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: Deleting a file does not free space until the Trash is emptied and any pinned versions of the file are unpinned, because a pinned version keeps its blocks.\nCITE: nimbus-storage-limits#3",
+      "prompt_eval_count": 294,
+      "eval_count": 47
+    },
+    "58f0ef669696dca33c9e6e20214596608d699d5eb7c1deca71a01e181b33419e": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: The context does not contain information about which telephone hotline issues prorated refund cheques for a storage plan.\nCITE: nimbus-pricing#0",
+      "prompt_eval_count": 275,
+      "eval_count": 33
+    },
+    "f2561aeb773a3352bc1457581d603a3f38c840845b12aafae32b780b05979cf4": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: The context states the Free plan keeps thirty days of version history, and the Business plan adds unlimited version history. It does not mention how many decades any tier archives version history.\nCITE: [nimbus-pricing#0]",
+      "prompt_eval_count": 282,
+      "eval_count": 50
+    },
+    "ccc4fa514884e8202ceb357029dfb6f8fc65b1a6ffc09908a83f4fe7548b1e08": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: The context does not contain information about an experimental quantum cipher encrypting the biometric passport vault offline. It only mentions AES two fifty six cipher for server side encryption at rest.\nCITE: nimbus-security#0, nimbus-security#1",
+      "prompt_eval_count": 282,
+      "eval_count": 54
+    },
+    "8a89087c2059411de5828935c01369d0dec06c42ad95fbb4cd45645c7705a98e": {
+      "model": "gemma3:27b",
+      "response": "ANSWER: The context does not contain information about millisecond jitter or webhook retry stampedes during lunar outages.\nCITE: nimbus-webhooks#0, nimbus-webhooks#1, nimbus-api-auth#3, nimbus-retention#2, nimbus-migration#1 (all chunks were reviewed and do not contain the answer)",
+      "prompt_eval_count": 297,
+      "eval_count": 77
     }
   }
 }

@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install lint format test eval demo red compare hooks scan \
+.PHONY: help install lint format test eval demo red compare record hooks scan \
         lint-docs check-learning-numbers docker-build docker-run clean
 
 IMAGE  ?= ailab-rag:local
@@ -36,6 +36,9 @@ red: ## Proof-of-gate: each sabotage must exit non-zero and name the failing met
 
 compare: ## Diff two saved runs that change ONE variable (RUN_A vs RUN_B)
 	uv run python -m ailab_rag.compare $(RUN_A) $(RUN_B)
+
+record: ## Record the Reader cassette from a live model (needs OLLAMA_HOST; opt-in)
+	uv run python scripts/record_cassette.py
 
 hooks: ## Enable the repo's git hooks (required once per clone)
 	git config core.hooksPath .githooks

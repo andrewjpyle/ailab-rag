@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "lab": "ailab-rag",
+  "dataset": "nimbus_questions",
+  "provider": "ollama",
+  "model": "gemma3:27b",
+  "primary_metric": "recall@5",
+  "metrics": {
+    "recall@5": 0.9643,
+    "hit@5": 1.0,
+    "mrr": 0.6726,
+    "ndcg@5": 0.7423,
+    "n": 14
+  },
+  "threshold": 0.7,
+  "passed": true,
+  "commit": "1402a684d0734118a40131e639f175cd2a122168",
+  "generated_at": "2026-10-02T14:35:08Z",
+  "retriever": "bm25",
+  "corpus_sha256": "1350f49a0522dc164f0bf01daa560d310f0e2b5faf79d64bea99c071bc7d9c8d",
+  "questions_sha256": "5067828f57a1e0eee1edc6099c683a320c5d36004b7fb8e847a16302fb08a636",
+  "config": {
+    "chunk_size": 32,
+    "chunk_overlap": 8,
+    "top_k": 5,
+    "retriever": "bm25",
+    "support_threshold": 0.4,
+    "tolerance": 0.05
+  },
+  "chunk_count": 87,
+  "tolerance": 0.05,
+  "thresholds": {
+    "recall": 0.7,
+    "hit": 0.7,
+    "mrr": 0.5,
+    "ndcg": 0.55
+  },
+  "critical": {
+    "n": 5,
+    "recall": 1.0
+  },
+  "trap": {
+    "n": 3,
+    "recall": 1.0
+  },
+  "gen_checks": {
+    "answered_n": 14,
+    "citation_resolvable": 1.0,
+    "lexical_support": 0.8457
+  },
+  "refusals": {
+    "refusal_correct": 4,
+    "false_refusal": 0,
+    "wrong_refusal": 0,
+    "false_refusal_rate": 0.0,
+    "wrong_refusal_rate": 0.0
+  },
+  "baselines": {
+    "bm25_recall": 0.9643,
+    "random_recall": 0.0714,
+    "lead_recall": 0.0,
+    "margin": 0.8929,
+    "required_margin": 0.1
+  },
+  "saturation": {
+    "recall@5": 0.9643,
+    "recall@1": 0.4286,
+    "saturated": false
+  },
+  "classes": {
+    "counts": {
+      "answerable": 14,
+      "unanswerable": 4,
+      "trap": 3,
+      "critical": 5
+    },
+    "insufficient": [],
+    "floor": 3
+  },
+  "misses": [
+    {
+      "id": "q07",
+      "missing": [
+        "nimbus-api-files#3"
+      ]
+    }
+  ],
+  "failures": []
+}

@@ -79,12 +79,17 @@ FORMAT path, not a real model.
 
 ## 7. The live provider is record-and-replay, not live in CI
 
-`OllamaProvider` records real completions once. `ReplayProvider` serves a committed JSON
-cassette keyed by `sha256(model, prompt)`. A cassette miss raises, so a stale cassette
-cannot silently pass.
+`OllamaProvider` records real completions once (via `make record`). `ReplayProvider` serves
+a committed JSON cassette keyed by `sha256(model, prompt)`. A cassette miss raises, so a
+stale cassette cannot silently pass. The committed cassette is a real `gemma3:27b`
+recording, and `ailab-eval --provider replay` scores the pipeline against it offline.
 
 - Rejected: a live model in CI. Non-deterministic, costs money or needs a server, and turns
-  an outage into a red build.
+  an outage into a red build. Recording once and replaying keeps the real model's behaviour
+  without the flakiness.
+- Finding from the real recording: the model echoes the context bracket format on some
+  citations (`[chunk#id]`). The Reader parser strips one surrounding pair, which is
+  defensive parsing, not relabelling, and keeps `citation_resolvable` at 1.0.
 
 ## 8. Kept from the template
 

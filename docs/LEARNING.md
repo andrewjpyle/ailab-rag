@@ -132,7 +132,9 @@ quoted. A footnote pointing at an unrelated page fails this check.
 
 Observed in this lab: canonical lexical_support is 1.0
 <!--lab:eval_results.json:gen_checks.lexical_support-->, because the stub reader copies its
-answer from the chunk it cites. A real model would score lower and more honestly.
+answer from the chunk it cites. The real `gemma3:27b` reader scores 0.8457
+<!--lab:results/replay_gemma3.json:gen_checks.lexical_support-->, lower and more honest,
+because it paraphrases the chunk instead of copying it.
 
 ## cite-or-refuse
 
@@ -156,6 +158,14 @@ so the lexical support drops below the refusal threshold and the reader refuses.
 model is needed to refuse a near-miss that shares every word with the corpus. [VERIFY] A
 learned reader with constrained decoding usually refuses unsupported questions better than a
 lexical rule.
+
+Observed with a real model: the reader seam was also run against a real `gemma3:27b` model,
+recorded once and replayed from `results/replay_gemma3.json`. It made 0 wrong refusals
+<!--lab:results/replay_gemma3.json:refusals.wrong_refusal--> and its citations resolved at
+1.0 <!--lab:results/replay_gemma3.json:gen_checks.citation_resolvable-->. Refusal is decided
+by lexical support before the reader is called, so the real model shows the same refusal
+counts as the stub. The real model paraphrases, so its lexical_support is lower than the
+stub's (see the lexical_support section).
 
 ## Worked example: a relevant chunk excluded by the cutoff
 

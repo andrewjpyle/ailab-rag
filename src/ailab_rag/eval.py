@@ -43,7 +43,12 @@ from ailab_rag.metrics import (
     recall_at_k,
     reciprocal_rank,
 )
-from ailab_rag.providers import StubProvider
+from ailab_rag.providers import (
+    CassetteMissError,
+    LLMProvider,
+    ReplayProvider,
+    StubProvider,
+)
 from ailab_rag.reader import Reader
 from ailab_rag.retrieval import Retriever, build_retriever
 
@@ -407,6 +412,23 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help="proof-of-gate: cite an unsupporting chunk (lexical-support negative control)",
     )
     parser.add_argument(
+        "--provider",
+        choices=["stub", "replay"],
+        default="stub",
+        help="reader backend: offline stub (default) or replay a recorded cassette",
+    )
+    parser.add_argument(
+        "--cassette",
+        type=Path,
+        default=Path("fixtures/cassettes/nimbus_reader.json"),
+        help="cassette path for --provider replay",
+    )
+    parser.add_argument(
+        "--model",
+        default="gemma3:27b",
+        help="recorded model id to replay (keys are sha256(model, prompt))",
+    )
+    parser.add_argument(
         "--table-from",
         type=Path,
         metavar="RESULTS_JSON",
@@ -442,14 +464,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     try:
         config = replace(load_config(args.config), **_overrides(args))
+        if args.provider == "replay":
+            provider: LLMProvider = ReplayProvider(args.cassette, name="ollama", model=args.model)
+        else:
+            provider = StubProvider()
         reader = Reader(
-            StubProvider(),
+            provider,
             support_threshold=config.support_threshold,
             force_answer=args.force_answer,
             sabotage_citations=args.sabotage_citations,
         )
         result = evaluate(config, reader=reader)
-    except (ConfigError, DatasetError, OSError) as exc:
+    except (ConfigError, DatasetError, OSError, CassetteMissError) as exc:
         print(f"ailab-eval: error: {exc}", file=sys.stderr)
         return 2
 
