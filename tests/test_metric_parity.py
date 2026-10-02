@@ -4,10 +4,10 @@ The port in ``ailab_rag.metrics`` is a verbatim copy. This test imports BOTH the
 the originals and asserts they produce identical numbers on a shared fixture, so the two
 cannot drift.
 
-The originals are loaded from the live ailab-evals clone when it is reachable (via
-``$AILAB_EVALS_METRICS`` or the default scratchpad path), and otherwise from the frozen
-verbatim copy in ``tests/_ailab_evals_metrics_ref.py``. When the live clone IS present we
-also assert the frozen copy still matches it, so the frozen copy cannot silently drift.
+The originals are loaded from the live ailab-evals clone when ``$AILAB_EVALS_METRICS``
+points at it, and otherwise from the frozen verbatim copy in
+``tests/_ailab_evals_metrics_ref.py``. When the live clone IS present we also assert the
+frozen copy still matches it, so the frozen copy cannot silently drift.
 """
 
 from __future__ import annotations
@@ -23,14 +23,11 @@ import pytest
 from ailab_rag import metrics as ported
 from tests import _ailab_evals_metrics_ref as frozen
 
-_DEFAULT_CLONE = Path(
-    "/tmp/ailab-evals-clone/"
-    "src/ailab_evals/metrics.py"
-)
-
-
 def _load_live() -> ModuleType | None:
-    path = Path(os.environ.get("AILAB_EVALS_METRICS", _DEFAULT_CLONE))
+    env = os.environ.get("AILAB_EVALS_METRICS")
+    if not env:
+        return None
+    path = Path(env)
     if not path.is_file():
         return None
     spec = importlib.util.spec_from_file_location("ailab_evals_metrics_live", path)
