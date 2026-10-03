@@ -1,0 +1,15 @@
+{
+  "name": "eval",
+  "command": [
+    "uv",
+    "run",
+    "ailab-eval"
+  ],
+  "exit_code": 0,
+  "captured_at": "2026-10-03T04:22:49+00:00",
+  "commit": "773ef4e31805b2df449beae50c1dff306aac7450",
+  "line_count": 9,
+  "env_passed": [],
+  "note": "",
+  "output": "| Date | Commit | Retriever | Dataset | chunk | top_k | recall@k | hit@k | mrr | ndcg@k | Notes |\n|---|---|---|---|---|---|---|---|---|---|---|\n| 2026-10-03 | 773ef4e | bm25 | nimbus_questions (n=14) | 32/8 | 5 | 0.9643 | 1.0000 | 0.6726 | 0.7423 | PASS |\nclass n: answerable=14, unanswerable=4, trap=3, critical=5\nsaturation guard: recall@5=0.9643 recall@1=0.4286 -> ok\nbaselines: bm25=0.9643 random=0.0714 lead=0.0000 margin=0.8929 (required 0.10)\nrefusals: correct=4 false_refusal=0 wrong_refusal=0\ngen checks: citation_resolvable=1.0000 lexical_support=1.0000 (answered n=14)\ncritical recall: 1.0000 (n=5)\n"
+}
