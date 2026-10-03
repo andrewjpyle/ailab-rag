@@ -25,6 +25,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from ailab_core.gate import floor_breach
+
 from ailab_rag.chunking import Chunk, chunk_corpus
 from ailab_rag.config import ConfigError, EvalConfig, load_config
 from ailab_rag.data import (
@@ -299,12 +301,9 @@ def _gate(
         "ndcg": (f"ndcg@{k}", scores["ndcg"]),
     }
     for base, floor in config.thresholds.items():
-        if floor <= 0.0:
-            continue
         label, value = metric_values[base]
-        score = value or 0.0
-        if score < floor - tol:
-            failures.append(f"{label} {score:.4f} < floor {floor:.4f} - tolerance {tol:.4f}")
+        if msg := floor_breach(label, value, floor, tol):
+            failures.append(msg)
     if saturated:
         failures.append(
             f"saturation recall@{k} and recall@1 both 1.0000; corpus cannot detect regressions"
@@ -321,17 +320,19 @@ def _gate(
         )
     support = gen["lexical_support"]
     answered = gen["answered_n"] > 0
-    if answered and support is not None and support < config.lexical_support_floor - tol:
-        failures.append(
-            f"lexical_support {support:.4f} < floor {config.lexical_support_floor:.4f} "
-            f"- tolerance {tol:.4f}; a citation does not support its answer"
-        )
+    if (
+        answered
+        and support is not None
+        and (msg := floor_breach("lexical_support", support, config.lexical_support_floor, tol))
+    ):
+        failures.append(f"{msg}; a citation does not support its answer")
     resolvable = gen["citation_resolvable"]
-    if answered and resolvable is not None and resolvable < config.citation_floor - tol:
-        failures.append(
-            f"citation_resolvable {resolvable:.4f} < floor {config.citation_floor:.4f} "
-            f"- tolerance {tol:.4f}"
-        )
+    if (
+        answered
+        and resolvable is not None
+        and (msg := floor_breach("citation_resolvable", resolvable, config.citation_floor, tol))
+    ):
+        failures.append(msg)
     return failures
 
 

@@ -1,25 +1,23 @@
-"""LLM provider seam for the Reader. Stdlib only: no SDKs, no third-party HTTP.
+"""LLM provider seam for the Reader.
 
-* :class:`StubProvider` is a deterministic offline Reader backend. It picks the context
-  chunk with the most token overlap with the question and echoes a short span from it, so
-  the prompt -> completion -> parse path runs with no network. Stub answers are a FORMAT
-  path, not a real model (see docs/LEARNING.md).
-* :class:`ReplayProvider` serves a committed JSON cassette keyed by ``sha256(model,
-  prompt)``. A miss RAISES, so a stale cassette cannot silently pass.
-* :class:`OllamaProvider` POSTs to a local Ollama server with ``urllib`` from stdlib, used
-  only in record mode to fill a cassette.
+The discipline-agnostic pieces (the ``LLMProvider`` protocol, ``cassette_key``,
+``CassetteMissError``, ``ReplayProvider`` and ``OllamaProvider``) now live in ``ailab_core`` and
+are re-exported here so existing imports keep working. Only :class:`StubProvider` is rag-specific:
+its output is a Reader answer (a context span), so it cannot be shared across labs.
 """
 
 from __future__ import annotations
 
-import hashlib
-import json
-import os
 import re
-import urllib.error
-import urllib.request
-from pathlib import Path
-from typing import Protocol, runtime_checkable
+
+from ailab_core.providers import (
+    CassetteMissError,
+    LLMProvider,
+    OllamaProvider,
+    ReplayProvider,
+    SupportsTokenCounts,
+    cassette_key,
+)
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 _CONTEXT_LINE = re.compile(r"^\[([^\]]+)\]\s+(.*)$")
@@ -27,21 +25,6 @@ _CONTEXT_LINE = re.compile(r"^\[([^\]]+)\]\s+(.*)$")
 
 def _tokens(text: str) -> set[str]:
     return set(_TOKEN.findall(text.lower()))
-
-
-@runtime_checkable
-class LLMProvider(Protocol):
-    """The minimum a text-completion backend must offer.
-
-    A real implementation wraps a vendor SDK or a local model server and reads its
-    credentials from the environment. Keeping the protocol this narrow is what makes
-    providers swappable and the eval reproducible.
-    """
-
-    name: str  # provider id recorded in results, e.g. "stub"
-    model: str
-
-    def complete(self, prompt: str) -> str: ...
 
 
 def _extract_question(prompt: str) -> str:
@@ -86,83 +69,12 @@ class StubProvider:
         return f"ANSWER: {span}\nCITE: {best_id}"
 
 
-def cassette_key(model: str, prompt: str) -> str:
-    """Stable key for a cassette entry: ``sha256(model, prompt)``."""
-    raw = json.dumps([model, prompt], sort_keys=True, ensure_ascii=False)
-    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
-
-
-class CassetteMissError(RuntimeError):
-    """Raised when a ReplayProvider is asked for a prompt its cassette does not hold."""
-
-
-class ReplayProvider:
-    """Replay a committed JSON cassette; a miss raises so a stale cassette cannot pass.
-
-    The cassette is a JSON object mapping ``sha256(model, prompt)`` to
-    ``{"model", "response"}``. ``name``/``model`` mirror the recorded backend so the
-    results record names what was replayed.
-    """
-
-    def __init__(self, path: str | Path, name: str = "replay", model: str = "replay") -> None:
-        self.path = Path(path)
-        self.name = name
-        self.model = model
-        raw = json.loads(self.path.read_text(encoding="utf-8"))
-        self._entries: dict[str, dict[str, str]] = raw.get("entries", raw)
-
-    def complete(self, prompt: str) -> str:
-        key = cassette_key(self.model, prompt)
-        hit = self._entries.get(key)
-        if hit is None:
-            raise CassetteMissError(
-                f"cassette miss for model {self.model!r} ({key[:12]}); re-record the cassette"
-            )
-        return hit["response"]
-
-
-class OllamaProvider:
-    """Local models via Ollama ``/api/generate``. Used only in record mode. Stdlib HTTP.
-
-    The server address comes from ``OLLAMA_HOST`` (default ``http://localhost:11434``) and
-    is never stored. Generation is pinned to ``temperature`` 0 and a fixed ``seed`` so a
-    re-record is deterministic, which keeps the replayed numbers stable.
-    """
-
-    name = "ollama"
-    DEFAULT_SEED = 7
-
-    def __init__(
-        self, model: str, host: str | None = None, timeout: float = 300.0, seed: int = DEFAULT_SEED
-    ) -> None:
-        self.model = model
-        base = host or os.environ.get("OLLAMA_HOST") or "http://localhost:11434"
-        if not base.startswith("http"):
-            base = "http://" + base
-        self.base = base.rstrip("/")
-        self.url = self.base + "/api/generate"
-        self.timeout = timeout
-        self.seed = seed
-
-    def generate(self, prompt: str) -> dict[str, object]:
-        """Return the raw Ollama response dict (text plus vendor token counts)."""
-        payload = json.dumps(
-            {
-                "model": self.model,
-                "prompt": prompt,
-                "stream": False,
-                "options": {"temperature": 0, "seed": self.seed},
-            }
-        ).encode("utf-8")
-        req = urllib.request.Request(
-            self.url, data=payload, headers={"Content-Type": "application/json"}
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                data: dict[str, object] = json.loads(resp.read())
-        except (urllib.error.URLError, TimeoutError) as exc:  # pragma: no cover - network
-            raise RuntimeError(f"ollama: {exc}") from exc
-        return data
-
-    def complete(self, prompt: str) -> str:
-        return str(self.generate(prompt).get("response", ""))
+__all__ = [
+    "CassetteMissError",
+    "LLMProvider",
+    "OllamaProvider",
+    "ReplayProvider",
+    "StubProvider",
+    "SupportsTokenCounts",
+    "cassette_key",
+]
