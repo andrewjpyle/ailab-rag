@@ -1,0 +1,14 @@
+{
+  "name": "red",
+  "command": [
+    "bash",
+    "scripts/prove_gate.sh"
+  ],
+  "exit_code": 0,
+  "captured_at": "2026-10-03T04:22:57+00:00",
+  "commit": "773ef4e31805b2df449beae50c1dff306aac7450",
+  "line_count": 18,
+  "env_passed": [],
+  "note": "Volatile per-run temp paths in the sabotage #2 error line redacted to <tmpdir> (macOS mktemp); no other change.",
+  "output": "== make red: proving the gate fails on each sabotage ==\nPASS [1 broken retrieval (random)]: exit 1, named 'recall@'\n    REGRESSION: recall@5 0.0714 < floor 0.7000 - tolerance 0.0500\n    REGRESSION: hit@5 0.0714 < floor 0.7000 - tolerance 0.0500\n    REGRESSION: mrr 0.0714 < floor 0.5000 - tolerance 0.0500\n    REGRESSION: ndcg@5 0.0714 < floor 0.5500 - tolerance 0.0500\nPASS [1b broken retrieval (top-k 1)]: exit 1, named 'recall@1'\n    REGRESSION: recall@1 0.4286 < floor 0.7000 - tolerance 0.0500\n    REGRESSION: hit@1 0.4286 < floor 0.7000 - tolerance 0.0500\n    REGRESSION: mrr 0.4286 < floor 0.5000 - tolerance 0.0500\n    REGRESSION: ndcg@1 0.4286 < floor 0.5500 - tolerance 0.0500\nPASS [2 empty corpus (0 chunks/docs)]: exit 2, named 'empty'\n    ailab-eval: error: <tmpdir>/empty.jsonl: corpus is empty\nPASS [3 fabricated unanswerable answer]: exit 1, named 'wrong_refusal'\n    REGRESSION: wrong_refusal 1.0000 > max 0.0000; an unanswerable question was answered\nPASS [4 unsupported citation]: exit 1, named 'lexical_support'\n    REGRESSION: lexical_support 0.0119 < floor 0.3000 - tolerance 0.0500; a citation does not support its answer\n== all red cases failed the gate as required ==\n"
+}
